@@ -1,6 +1,4 @@
 from __future__ import unicode_literals
-
-from django.core.validators import RegexValidator
 from django.db import models
 from django.core.mail import send_mail
 from django.contrib.auth.models import PermissionsMixin
@@ -87,22 +85,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
-class Recruiter(models.Model):
-    id = models.AutoField(primary_key=True)
-    full_name = models.CharField(max_length=100)
-    users = models.ManyToManyField(User)
-    created_at = models.DateTimeField(null=True, auto_now_add=True)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
-
-
 class Candidate(models.Model):
     certifications = models.TextField(null=True)
     companies = models.TextField(null=True)
     educations = models.TextField(null=True)
-    linkedin_url = models.TextField(null=False)
+    linkedin_url = models.TextField(null=False, unique=True)
     full_name = models.TextField(null=False)
     avatar = models.TextField(null=True)
-    awards = models.TextField(null=False)
+    awards = models.TextField(null=True)
     country = models.TextField(null=True)
     courses = models.TextField(null=True)
     email = models.TextField(null=True)
@@ -116,6 +106,7 @@ class Candidate(models.Model):
 
     def __unicode__(self):
         return self.full_name
+
 
 class Task(models.Model):
     id = models.AutoField(primary_key=True)

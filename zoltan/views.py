@@ -1,11 +1,7 @@
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.contrib.auth.hashers import check_password
 from django.shortcuts import render, redirect, render_to_response
 # Create your views here.
-from b52 import settings
 from zoltan.forms import SignUpForm
-from zoltan.models import User
 
 
 def groups(request):

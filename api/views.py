@@ -2,9 +2,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status, generics, permissions, authentication
-from zoltan.models import User, Task
-from api.serializers import UserSerializer, TaskDetailSerializer, \
-    TaskCreateSerializer
+from zoltan.models import User, Task, TaskCandidates
+from api.serializers import UserSerializer, TaskDetailSerializer, TaskCreateSerializer, TaskCandidateSerializer, \
+    CandidateSerializer
 
 
 class MyAuthentication(authentication.TokenAuthentication):
@@ -43,16 +43,13 @@ class UserViewSet(generics.CreateAPIView, generics.RetrieveUpdateDestroyAPIView)
 
 
 class TaskViewSet(generics.ListCreateAPIView):
+    """This view should return a list of all the purchases for the currently authenticated user."""
     queryset = Task.objects.filter()
     serializer_class = TaskCreateSerializer
     authentication_classes = (MyAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        """
-        This view should return a list of all the purchases
-        for the currently authenticated user.
-        """
         user = self.request.user
         return Task.objects.filter(user_id=user)
 
@@ -61,11 +58,9 @@ class TaskViewSet(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=self.request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=self.request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class TaskDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
@@ -77,22 +72,19 @@ class TaskDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
         user = self.request.user
         return Task.objects.filter(user_id=user)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
+class TaskCandidateViewSet(generics.CreateAPIView):
+    queryset = TaskCandidates.objects.all()
+    serializer_class = TaskCandidateSerializer
+    authentication_classes = (MyAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
-# class TaskCandidateViewSet(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Task.objects.filter()
-#     serializer_class = TaskCandidateSerializer
-#     authentication_classes = (MyAuthentication,)
-#     permission_classes = (IsAuthenticated,)
-#
-#     def get_queryset(self):
-#         user = self.request.user
-#         return TaskCandidates.objects.filter(user_id=user)
-#
-#     def put(self, request, *args, **kwargs):
-#         pass
+    def create(self, request, *args, **kwargs):
+        candidate = CandidateSerializer(data=request.data['candidate'])
+        candidate.is_valid(raise_exception=True)
+        candidate = candidate.save()
 
-
-
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(candidate=candidate)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

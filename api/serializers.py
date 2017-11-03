@@ -1,4 +1,4 @@
-from rest_framework import serializers, request
+from rest_framework import serializers
 
 from zoltan.models import User, Task, Candidate, TaskCandidates
 
@@ -26,12 +26,21 @@ class TaskDetailSerializer(serializers.ModelSerializer):
         extra_kwargs = {'user': {'read_only': True}}
 
 
-# class TaskCandidateSerializer(serializers.ModelSerializer):
-#     tasks = serializers.PrimaryKeyRelatedField(
-#         many=True, read_only=True, queryset=Task.objects.all())
-#     candidates = serializers.PrimaryKeyRelatedField(
-#         many=True, queryset=Candidate.objects.all())
-#
-#     class Meta:
-#         model = TaskCandidates
-#         fields = '__all__'
+class CandidateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Candidate
+        fields = '__all__'
+
+    def create(self, validated_data):
+        candidate = Candidate.objects.create(**validated_data)
+        return candidate
+
+
+class TaskCandidateSerializer(serializers.ModelSerializer):
+    task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
+    candidate = CandidateSerializer()
+
+    class Meta:
+        model = TaskCandidates
+        fields = '__all__'
