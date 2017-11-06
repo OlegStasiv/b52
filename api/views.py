@@ -84,16 +84,23 @@ class TaskCandidateViewSet(generics.ListCreateAPIView):
         candidate.is_valid(raise_exception=True)
         candidate = candidate.save()
 
-        data = request.data
-
-        serializer = self.get_serializer(data=data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(candidate=candidate)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class CandidateProfile(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TaskDetailCandidateSerializer
+    authentication_classes = (MyAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        relation_id = self.kwargs['pk']
+        return TaskCandidates.objects.filter(id=relation_id)
+
+
 class TaskDetailCandidate(generics.ListCreateAPIView):
-    queryset = TaskCandidates.objects.all()
     serializer_class = TaskDetailCandidateSerializer
     authentication_classes = (MyAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -101,4 +108,5 @@ class TaskDetailCandidate(generics.ListCreateAPIView):
     def get_queryset(self):
         task = self.kwargs['pk']
         return TaskCandidates.objects.filter(task_id=task)
+
 

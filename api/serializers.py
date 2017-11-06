@@ -39,7 +39,7 @@ class CandidateSerializer(serializers.ModelSerializer):
 
 class TaskCandidateSerializer(serializers.ModelSerializer):
     task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
-    # candidate = CandidateSerializer()
+    candidate = CandidateSerializer(read_only=True)
 
     class Meta:
         model = TaskCandidates
@@ -48,7 +48,7 @@ class TaskCandidateSerializer(serializers.ModelSerializer):
 
 class TaskDetailCandidateSerializer(serializers.ModelSerializer):
     task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
-    candidate = CandidateSerializer()
+    candidate = CandidateSerializer(read_only=True)
 
     class Meta:
         model = TaskCandidates

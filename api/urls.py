@@ -7,5 +7,6 @@ urlpatterns = [
     url(r'^tasks/(?P<pk>[0-9]+)$', views.TaskDetailViewSet.as_view()),
     url(r'^tasks/(?P<pk>[0-9]+)/candidates/$', views.TaskDetailCandidate.as_view()),
     url(r'^candidate/$', views.TaskCandidateViewSet.as_view()),
+    url(r'^candidate/(?P<pk>[0-9]+)$', views.CandidateProfile.as_view()),
 
 ]
