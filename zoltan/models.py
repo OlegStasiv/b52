@@ -9,22 +9,22 @@ from b52 import settings
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, first_name, last_name, email, password):
+    def create_user(self, email, password):
         """Creates and saves a User with the given email, date of
         birth and password.
         """
-        if not first_name:
-            raise ValueError('Users must have an first name')
-        if not last_name:
-            raise ValueError('Users must have an last name')
+        # if not first_name:
+        #     raise ValueError('Users must have an first name')
+        # if not last_name:
+        #     raise ValueError('Users must have an last name')
         if not email:
             raise ValueError('Users must have an email address')
         if not password:
             raise ValueError('Users must have an password')
 
         user = self.model(
-            first_name=first_name,
-            last_name=last_name,
+            # first_name=first_name,
+            # last_name=last_name,
             email=self.normalize_email(email),
             password=password,
         )
@@ -32,22 +32,22 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, email, password):
+    def create_superuser(self, email, password):
         """Creates and saves a superuser with the given email, date of
         birth and password.
         """
-        if not first_name:
-            raise ValueError('Users must have an first name')
-        if not last_name:
-            raise ValueError('Users must have an last name')
+        # if not first_name:
+        #     raise ValueError('Users must have an first name')
+        # if not last_name:
+        #     raise ValueError('Users must have an last name')
         if not email:
             raise ValueError('Users must have an email address')
         if not password:
             raise ValueError('Users must have an password')
 
         user = self.create_user(
-            first_name=first_name,
-            last_name=last_name,
+            # first_name=first_name,
+            # last_name=last_name,
             email=self.normalize_email(email),
             password=password,
         )
@@ -103,6 +103,7 @@ class Candidate(models.Model):
     title = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+
 
     def __unicode__(self):
         return self.full_name

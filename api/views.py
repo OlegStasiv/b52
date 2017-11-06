@@ -2,9 +2,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status, generics, permissions, authentication
-from zoltan.models import User, Task, TaskCandidates
+from zoltan.models import User, Task, TaskCandidates, Candidate
 from api.serializers import UserSerializer, TaskDetailSerializer, TaskCreateSerializer, TaskCandidateSerializer, \
-    CandidateSerializer
+    CandidateSerializer, TaskDetailCandidateSerializer
 
 
 class MyAuthentication(authentication.TokenAuthentication):
@@ -73,7 +73,7 @@ class TaskDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
         return Task.objects.filter(user_id=user)
 
 
-class TaskCandidateViewSet(generics.CreateAPIView):
+class TaskCandidateViewSet(generics.ListCreateAPIView):
     queryset = TaskCandidates.objects.all()
     serializer_class = TaskCandidateSerializer
     authentication_classes = (MyAuthentication,)
@@ -84,7 +84,21 @@ class TaskCandidateViewSet(generics.CreateAPIView):
         candidate.is_valid(raise_exception=True)
         candidate = candidate.save()
 
-        serializer = self.get_serializer(data=request.data)
+        data = request.data
+
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save(candidate=candidate)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TaskDetailCandidate(generics.ListCreateAPIView):
+    queryset = TaskCandidates.objects.all()
+    serializer_class = TaskDetailCandidateSerializer
+    authentication_classes = (MyAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        task = self.kwargs['pk']
+        return TaskCandidates.objects.filter(task_id=task)
+

@@ -39,8 +39,18 @@ class CandidateSerializer(serializers.ModelSerializer):
 
 class TaskCandidateSerializer(serializers.ModelSerializer):
     task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
+    # candidate = CandidateSerializer()
+
+    class Meta:
+        model = TaskCandidates
+        exclude = ('candidate',)
+
+
+class TaskDetailCandidateSerializer(serializers.ModelSerializer):
+    task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
     candidate = CandidateSerializer()
 
     class Meta:
         model = TaskCandidates
         fields = '__all__'
+        extra_kwargs = {'pk': {'read_only': True}}
