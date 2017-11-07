@@ -27,6 +27,12 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
 
 class CandidateSerializer(serializers.ModelSerializer):
+    awards = serializers.ListField(child=serializers.DictField())
+    educations = serializers.ListField(child=serializers.DictField())
+    courses = serializers.ListField(child=serializers.DictField())
+    languages = serializers.ListField(child=serializers.DictField())
+    projects = serializers.ListField(child=serializers.DictField())
+    skills = serializers.ListField(child=serializers.CharField())
 
     class Meta:
         model = Candidate
