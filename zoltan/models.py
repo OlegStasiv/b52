@@ -104,7 +104,6 @@ class Candidate(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
-
     def __unicode__(self):
         return self.full_name
 
@@ -121,16 +120,22 @@ class Task(models.Model):
     forward_message_text = models.TextField(max_length=5000, null=True)
     brake_every = models.IntegerField(default=0)
     brake_for = models.IntegerField(default=0)
+    max_send_connect = models.IntegerField(default=0)
     connect_with_message = models.BooleanField(default=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     candidates = models.ManyToManyField(Candidate, through='TaskCandidates')
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class TaskCandidates(models.Model):
     task = models.ForeignKey(Task)
     candidate = models.ForeignKey(Candidate)
     send_connect = models.BooleanField(default=False)
+    send_connect_date = models.DateTimeField(null=True)
     accept_connect = models.BooleanField(default=False)
+    accept_connect_date = models.DateTimeField(null=True)
     send_message = models.BooleanField(default=False)
+    send_message_date = models.DateTimeField(null=True)
     send_forward = models.BooleanField(default=False)
+    send_forward_date = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
