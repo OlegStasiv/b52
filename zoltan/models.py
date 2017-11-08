@@ -1,8 +1,12 @@
 from __future__ import unicode_literals
+
 from django.db import models
 from django.core.mail import send_mail
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext_lazy as _
 
 from b52 import settings
@@ -102,7 +106,7 @@ class Candidate(models.Model):
     summary = models.TextField(null=True)
     title = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.full_name
@@ -139,3 +143,15 @@ class TaskCandidates(models.Model):
     send_forward = models.BooleanField(default=False)
     send_forward_date = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+@receiver(pre_save, sender=TaskCandidates)
+def set_active_from_on_update(sender, instance, **kwargs):
+    if instance.send_connect is True and instance.send_connect_date is None:
+        instance.send_connect_date = datetime.now()
+    if instance.accept_connect is True and instance.accept_connect_date is None:
+        instance.accept_connect_date = datetime.now()
+    if instance.send_message is True and instance.send_message_date is None:
+        instance.send_message_date = datetime.now()
+    if instance.send_forward is True and instance.send_forward_date is None:
+        instance.send_forward_date = datetime.now()
