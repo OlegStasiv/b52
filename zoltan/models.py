@@ -144,6 +144,9 @@ class TaskCandidates(models.Model):
     send_forward_date = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('task', 'candidate')
+
 
 @receiver(pre_save, sender=TaskCandidates)
 def set_active_from_on_update(sender, instance, **kwargs):

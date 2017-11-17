@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from zoltan.models import User, Task, Candidate, TaskCandidates
 
 
@@ -33,13 +32,14 @@ class CandidateSerializer(serializers.ModelSerializer):
     languages = serializers.JSONField(allow_null=True)
     projects = serializers.JSONField(allow_null=True)
     skills = serializers.ListField(child=serializers.CharField(allow_null=True), allow_null=True)
+    linkedin_url = serializers.URLField()
 
     class Meta:
         model = Candidate
         fields = '__all__'
 
     def create(self, validated_data):
-        candidate = Candidate.objects.create(**validated_data)
+        candidate, created = Candidate.objects.update_or_create(linkedin_url=validated_data['linkedin_url'], defaults=validated_data)
         return candidate
 
 

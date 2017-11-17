@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -86,8 +87,11 @@ class TaskCandidateViewSet(generics.ListCreateAPIView):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(candidate=candidate)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        try:
+            serializer.save(candidate=candidate)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response({'detail': 'Already exists this relation'}, status=status.HTTP_409_CONFLICT)
 
 
 class CandidateProfile(generics.RetrieveUpdateDestroyAPIView):
@@ -108,5 +112,3 @@ class TaskDetailCandidate(generics.ListCreateAPIView):
     def get_queryset(self):
         task = self.kwargs['pk']
         return TaskCandidates.objects.filter(task_id=task)
-
-
