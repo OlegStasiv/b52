@@ -1,5 +1,5 @@
-
 from django.db import IntegrityError
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -7,6 +7,8 @@ from rest_framework import status, generics, permissions, authentication
 from zoltan.models import User, Task, TaskCandidates
 from api.serializers import UserSerializer, TaskDetailSerializer, TaskCreateSerializer, TaskCandidateSerializer, \
     CandidateSerializer, TaskDetailCandidateSerializer
+
+APP_VERSION = '0.1'  # CHANGE APP VERSION HERE
 
 
 class MyAuthentication(authentication.TokenAuthentication):
@@ -118,3 +120,15 @@ class TaskDetailCandidate(generics.ListCreateAPIView):
     def get_queryset(self):
         task = self.kwargs['pk']
         return TaskCandidates.objects.filter(task_id=task)
+
+
+@api_view()
+def check_version(request):
+    """Method to check actual version of app.
+
+    :parameter: version -- version from app
+    """
+    if request.GET.get('version') == APP_VERSION:
+        return Response({"actual": True})
+    else:
+        return Response({"actual": False})
