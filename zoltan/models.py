@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-
 from django.db import models
 from django.core.mail import send_mail
 from django.contrib.auth.models import PermissionsMixin
@@ -66,6 +65,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email'), unique=True)
     date_joined = models.DateTimeField(_('registered'), auto_now_add=True)
     is_active = models.BooleanField(_('is_active'), default=True)
+    points = models.IntegerField(default=1000)
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
@@ -87,6 +87,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def send_email_to_user(self, subject, message, from_email=None, **kwargs):
         """Send email to user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def update_points(self):
+        """Minus points for """
+        self.points = self.points - 1
+        self.save()
 
 
 class Candidate(models.Model):

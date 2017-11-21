@@ -1,9 +1,10 @@
+
 from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status, generics, permissions, authentication
-from zoltan.models import User, Task, TaskCandidates, Candidate
+from zoltan.models import User, Task, TaskCandidates
 from api.serializers import UserSerializer, TaskDetailSerializer, TaskCreateSerializer, TaskCandidateSerializer, \
     CandidateSerializer, TaskDetailCandidateSerializer
 
@@ -89,6 +90,7 @@ class TaskCandidateViewSet(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         try:
             serializer.save(candidate=candidate)
+            request.user.update_points()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except IntegrityError:
             return Response({'detail': 'Already exists this relation'}, status=status.HTTP_409_CONFLICT)
@@ -102,6 +104,10 @@ class CandidateProfile(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         relation_id = self.kwargs['pk']
         return TaskCandidates.objects.filter(id=relation_id)
+
+    def patch(self, request, *args, **kwargs):
+        request.user.update_points()
+        return self.partial_update(request, *args, **kwargs)
 
 
 class TaskDetailCandidate(generics.ListCreateAPIView):
