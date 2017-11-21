@@ -25,7 +25,7 @@ SECRET_KEY = '$8w8(a5$r$wl$x3@psabl2v^wahjra9elv&-@3dq(j3+c=d986'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['18.194.91.182', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'zoltan',
     'api',
 ]
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -149,3 +151,9 @@ STATICFILES_DIRS = (
 )
 
 TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'ooleksandrovskij@gmail.com'
+EMAIL_HOST_PASSWORD = 'YonchiBot'
+EMAIL_PORT = 587
