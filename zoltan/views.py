@@ -15,6 +15,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from zoltan.forms import SignUpForm, PasswordResetForm
+from zoltan.models import Task, Candidate, TaskCandidates
 
 UserModel = get_user_model()
 def index(request):
@@ -35,7 +36,7 @@ def log_in(request):
                 login(request, user)
                 if user.is_superuser:
                     return redirect('/admin')
-                return redirect('/')
+                return redirect('/tasks')
             return redirect('/login')
         elif request.POST.get('submit') == 'Sign Up':
             form = SignUpForm(request.POST)
@@ -45,7 +46,7 @@ def log_in(request):
                 raw_password = form.cleaned_data.get('password1')
                 user = authenticate(username=username, password=raw_password)
                 login(request, user)
-                return redirect('/')
+                return redirect('/tasks')
     return render_to_response('login.html')
 
 
@@ -56,7 +57,7 @@ def log_out(request):
 
 # @csrf_protect
 def password_reset(request,
-                   template_name='login.html',
+                   template_name='login',
                    email_template_name='registration/password_reset_email.html',
                    subject_template_name='registration/password_reset_subject.txt',
                    password_reset_form=PasswordResetForm,
@@ -154,3 +155,20 @@ def password_reset_confirm(request, uidb64=None, token=None,
         context.update(extra_context)
 
     return TemplateResponse(request, template_name, context)
+
+
+def tasks(request):
+    if request.user.is_authenticated():
+        tasks = Task.objects.filter(user_id=request.user.id)
+        context = {'tasks': tasks}
+        return render(request, 'tasks.html', context)
+    return redirect('/tasks')
+
+
+def candidates(request):
+    if request.user.is_authenticated():
+        task_id = request.GET.get('id')
+        candidates = TaskCandidates.objects.filter(task__id=task_id)
+        context = {'candidates': candidates, 'tasks': tasks}
+        return render(request, 'candidates.html', context)
+    return redirect('/login')

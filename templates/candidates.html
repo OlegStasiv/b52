@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main_block %}
+    {% load pagination_tags %}
+    {% load sorting_tags %}
+    {% auto_sort candidates %}
+    {% autopaginate candidates 10 %}
+{#    {% load sorting_stun %}#}
+    {% if candidates %}
+        <table class="table table-hover">
+        <thead>
+        <tr>
+            <th> Full name </th>
+            <th> Connect </th>
+            <th> Accept </th>
+            <th> Message </th>
+            <th> Forward </th>
+            <th> Options</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for candidate in candidates %}
+                    <tr>
+                    <td>{{ candidate.candidate.full_name }}</td>
+                    {# CONNECT ICONS #}
+                    {% if candidate.send_connect == False %}
+                        <td><img src="{% static 'web/images/c_false.png' %}"  style="max-height:100%; max-width:100%"/>
+                        </td>
+                    {% else %}
+                        <td><img src="{% static 'web/images/c_true.png' %}"  style="max-height:100%; max-width:100%"/>
+                        </td>
+                    {% endif %}
+                    {# ACCEPT ICONS #}
+                    {% if candidate.accept_connect == False %}
+                        <td><img src="{% static 'web/images/a_false.png' %}"  style="max-height:100%; max-width:100%"/>
+                        </td>
+                    {% else %}
+                        <td><img src="{% static 'web/images/a_true.png' %}"  style="max-height:100%; max-width:100%"/>
+                        </td>
+                    {% endif %}
+                    {# SEND MESSAGE ICONS #}
+                    {% if candidate.send_message == False %}
+                        <td><img src="{% static 'web/images/m_false.png' %}"  style="max-height:100%; max-width:100%"/>
+                        </td>
+                    {% else %}
+                        <td><img src="{% static 'web/images/m_true.png' %}"  style="max-height:100%; max-width:100%"/>
+                        </td>
+                    {% endif %}
+{#                  {# FORWRD ICONS #}
+                    {% if candidate.send_forward == False %}
+                        <td><img src="{% static 'web/images/f_false.png' %}"  style="max-height:100%; max-width:100%"/>
+                        </td>
+                    {% else %}
+                        <td><img src="{% static 'web/images/f_true.png' %}"  style="max-height:100%; max-width:100%"/>
+                        </td>
+                    {% endif %}
+                </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            <strong>Warning!</strong> Choose any task into Tasks tab!
+        </div>
+    {% endif %}
+
+
+    {% paginate %}
+
+
+{% endblock %}

@@ -1,0 +1,39 @@
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.navbar {
+  margin-bottom: 20px;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    color: #fdfdff;
+    background-color: #27e200;
+}
+
+.btn {
+    background-color: #56e043;
+    color: #fdfdff;
+}
+
+.btn > a:hover {
+    color: #00b3ee;
+}
+
+.dropdown-menu {
+  top: 50px; /*height of main menu*/
+  width: 100%
+}
+
+.pagination > .active > a, .pagination > .active > a:hover, .pagination > .active > a:focus, .pagination > .active > span, .pagination > .active > span:hover, .pagination > .active > span:focus {
+    z-index: 1;
+    color: #fff;
+    background-color: #0eb700;
+    border-color: #0eb700;
+    cursor: default;
+}
+
+body{
+  padding: 50px;
+}

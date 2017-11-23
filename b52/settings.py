@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'zoltan',
     'api',
+    'sorting_bootstrap',
+    'pagination_bootstrap',
 ]
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -60,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'pagination_bootstrap.middleware.PaginationMiddleware',
 ]
 
 ROOT_URLCONF = 'b52.urls'
@@ -90,11 +93,11 @@ WSGI_APPLICATION = 'b52.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'yonchi',
-        'USER': 'postgres',
+        'NAME': 'zoltan',
+        'USER': 'lego',
         'HOST': '127.0.0.1',
         'PORT': 5432,
-        'PASSWORD': 'yura123',
+        'PASSWORD': '12345678',
     }
 }
 
