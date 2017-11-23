@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main_block %}
+    {% load pagination_tags %}
+    {% load sorting_tags %}
+    {% auto_sort tasks %}
+    {% autopaginate tasks 10 %}
+
+    {% if tasks %}
+        <br>
+        <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Task</th>
+            <th>Created Date</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks %}
+            <tr class='clickable-row' data-board-id="{{ task.id }}" data-href='/candidates/?id={{ task.id }}' >
+                <td>{{ task.task_name }}</td>
+                <td>{{ task.created_at }}</td>
+                <td><img src="{% static 'web/images/setting.png' %}"  style="max-height:100%; max-width:100%"/>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            <strong>Info!</strong> Please, create Task by means of Desktop APP!
+        </div>
+    {% endif %}
+
+
+    {% paginate %}
+
+{% endblock %}
