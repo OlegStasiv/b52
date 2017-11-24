@@ -9,19 +9,20 @@ from django.contrib.auth.tokens import default_token_generator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, render_to_response, resolve_url
 from django.template.response import TemplateResponse
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.utils.deprecation import RemovedInDjango21Warning
 from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from zoltan.forms import SignUpForm, PasswordResetForm
-from zoltan.models import Task, Candidate, TaskCandidates
+from zoltan.models import Task, TaskCandidates
 
 UserModel = get_user_model()
+
+
 def index(request):
     if request.user.is_authenticated():
         pass
-        return render(request, 'tasks.html')
+        return redirect('tasks')
     return render_to_response('index.html')
 
 
@@ -55,7 +56,6 @@ def log_out(request):
     return redirect('/login')
 
 
-# @csrf_protect
 def password_reset(request,
                    template_name='login',
                    email_template_name='registration/password_reset_email.html',
@@ -102,6 +102,7 @@ def password_reset(request,
         context.update(extra_context)
 
     return TemplateResponse(request, template_name, context)
+
 
 # Doesn't need csrf_protect since no-one can guess the URL
 @sensitive_post_parameters()
