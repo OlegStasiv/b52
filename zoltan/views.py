@@ -6,7 +6,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.shortcuts import render, redirect, render_to_response, resolve_url
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -21,7 +21,6 @@ UserModel = get_user_model()
 
 def index(request):
     if request.user.is_authenticated():
-        pass
         return redirect('tasks')
     return render_to_response('index.html')
 
@@ -166,9 +165,23 @@ def tasks(request):
     return redirect('/tasks')
 
 
+def detail_tasks(request, id):
+    if request.user.is_authenticated():
+        if request.is_ajax():
+            obj = Task.objects.get(id=id)
+            data = {"task_name": obj.task_name, "linkedin_url":obj.linkedin_url,
+                    "connect_message_text": obj.connect_message_text, "forward_message": obj.forward_message_text,
+                    "connection_percent": obj.connection_percent, "brake_every": obj.brake_every,
+                    "brake_on": obj.brake_for, "connect_with_message": obj.connect_with_message}
+            return JsonResponse({'data': data})
+        else:
+            raise Http404
+
+
 def candidates(request):
     if request.user.is_authenticated():
-        task_id = request.GET.get('id')
+        task_id = request.GET.get('task_id')
+        tasks = Task.objects.filter(user_id=request.user.id)
         candidates = TaskCandidates.objects.filter(task__id=task_id)
         context = {'candidates': candidates, 'tasks': tasks}
         return render(request, 'candidates.html', context)

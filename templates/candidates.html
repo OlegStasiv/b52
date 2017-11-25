@@ -7,59 +7,78 @@
     {% auto_sort candidates %}
     {% autopaginate candidates 10 %}
 {#    {% load sorting_stun %}#}
+    <form class="form-group form-inline" method="GET" action={% url 'candidates' %}>
+        <select class="selectpicker" data-style="btn-success" data-live-search="true" data-width="92%" name="task_id">
+            {% if not request.GET.task_id %}
+                    <option value="0" disabled selected>Select task</option>
+                {% endif %}
+            {% for task in tasks %}
+
+                <option value="{{ task.id }}"
+                    {% if "task_id" in request.GET %}
+                            {% if request.GET.task_id == task.id|stringformat:"s" %}
+                                {{ task.id }}
+                                selected
+                            {% endif %}
+                    {% endif %}
+                >{{ task.task_name }}</option>
+            {% endfor %}
+        </select>
+        <button id="load" type="submit" class="btn btn-success">Show</button>
+    </form>
+
     {% if candidates %}
         <table class="table table-hover">
-        <thead>
-        <tr>
-            <th> Full name </th>
-            <th> Connect </th>
-            <th> Accept </th>
-            <th> Message </th>
-            <th> Forward </th>
-            <th> Options</th>
-        </tr>
-        </thead>
-        <tbody>
+            <thead>
+            <tr>
+                <th> Full name</th>
+                <th> Connect</th>
+                <th> Accept</th>
+                <th> Message</th>
+                <th> Forward</th>
+                <th> Options</th>
+            </tr>
+            </thead>
+            <tbody>
             {% for candidate in candidates %}
-                    <tr>
+                <tr>
                     <td>{{ candidate.candidate.full_name }}</td>
                     {# CONNECT ICONS #}
                     {% if candidate.send_connect == False %}
-                        <td><img src="{% static 'web/images/c_false.png' %}"  style="max-height:100%; max-width:100%"/>
+                        <td><img src="{% static 'web/images/c_false.png' %}" style="max-height:100%; max-width:100%"/>
                         </td>
                     {% else %}
-                        <td><img src="{% static 'web/images/c_true.png' %}"  style="max-height:100%; max-width:100%"/>
+                        <td><img src="{% static 'web/images/c_true.png' %}" style="max-height:100%; max-width:100%"/>
                         </td>
                     {% endif %}
                     {# ACCEPT ICONS #}
                     {% if candidate.accept_connect == False %}
-                        <td><img src="{% static 'web/images/a_false.png' %}"  style="max-height:100%; max-width:100%"/>
+                        <td><img src="{% static 'web/images/a_false.png' %}" style="max-height:100%; max-width:100%"/>
                         </td>
                     {% else %}
-                        <td><img src="{% static 'web/images/a_true.png' %}"  style="max-height:100%; max-width:100%"/>
+                        <td><img src="{% static 'web/images/a_true.png' %}" style="max-height:100%; max-width:100%"/>
                         </td>
                     {% endif %}
                     {# SEND MESSAGE ICONS #}
                     {% if candidate.send_message == False %}
-                        <td><img src="{% static 'web/images/m_false.png' %}"  style="max-height:100%; max-width:100%"/>
+                        <td><img src="{% static 'web/images/m_false.png' %}" style="max-height:100%; max-width:100%"/>
                         </td>
                     {% else %}
-                        <td><img src="{% static 'web/images/m_true.png' %}"  style="max-height:100%; max-width:100%"/>
+                        <td><img src="{% static 'web/images/m_true.png' %}" style="max-height:100%; max-width:100%"/>
                         </td>
                     {% endif %}
-{#                  {# FORWRD ICONS #}
+                    {#                  {# FORWRD ICONS #}
                     {% if candidate.send_forward == False %}
-                        <td><img src="{% static 'web/images/f_false.png' %}"  style="max-height:100%; max-width:100%"/>
+                        <td><img src="{% static 'web/images/f_false.png' %}" style="max-height:100%; max-width:100%"/>
                         </td>
                     {% else %}
-                        <td><img src="{% static 'web/images/f_true.png' %}"  style="max-height:100%; max-width:100%"/>
+                        <td><img src="{% static 'web/images/f_true.png' %}" style="max-height:100%; max-width:100%"/>
                         </td>
                     {% endif %}
                 </tr>
-
             {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
     {% else %}
         <div class="alert alert-warning" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -68,8 +87,6 @@
         </div>
     {% endif %}
 
-
     {% paginate %}
-
 
 {% endblock %}

@@ -17,9 +17,6 @@ body {
     color: #fdfdff;
 }
 
-.btn > a:hover {
-    color: #00b3ee;
-}
 
 .dropdown-menu {
   top: 50px; /*height of main menu*/
@@ -36,4 +33,12 @@ body {
 
 body{
   padding: 50px;
+}
+
+.bootstrap-select>.dropdown-toggle.bs-placeholder:hover {
+    color: #fdfdff;
+}
+
+.filter-option.pull-left {
+    color: white;
 }

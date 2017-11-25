@@ -10,24 +10,33 @@
     {% if tasks %}
         <br>
         <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>Task</th>
-            <th>Created Date</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for task in tasks %}
-            <tr class='clickable-row' data-board-id="{{ task.id }}" data-href='/candidates/?id={{ task.id }}' >
-                <td>{{ task.task_name }}</td>
-                <td>{{ task.created_at }}</td>
-                <td><img src="{% static 'web/images/setting.png' %}"  style="max-height:100%; max-width:100%"/>
-
+            <thead>
+            <tr>
+                <th>Task</th>
+                <th>Created Date</th>
+                <th>Actions</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for task in tasks %}
+                <tr data-board-id="{{ task.id }}">
+                    <td>{{ task.task_name }}</td>
+                    <td>{{ task.created_at }}</td>
+                    <td><a class="detail" id="{{ task.id }}" href="#" data-toggle="modal" data-target="#form-modal"><img
+                            src="{% static 'web/images/setting.png' %}"
+                            data-src="{% static 'web/images/setting1.png' %}"
+                            data-hover="{% static 'web/images/setting1.png' %}" class="image-container"
+                            style="max-height:100%; max-width:100%"/></a>
+                        <a class="candidates" href="/candidates/?task_id={{ task.id }}"><img
+                                src="{% static 'web/images/candidates.png' %}"
+                                data-src="{% static 'web/images/candidates1.png' %}"
+                                data-hover="{% static 'web/images/candidates1.png' %}" class="image-candidates"
+                                style="max-height:100%; max-width:100%"/></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% else %}
         <div class="alert alert-info" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -36,7 +45,65 @@
         </div>
     {% endif %}
 
-
     {% paginate %}
 
+{#    MODAL WINDOW TASK DETAIL#}
+    <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4><span id="model_title"></span></h4>
+            </div>
+            <div id="form-modal-body" class="modal-body">
+{#                  Query URL#}
+                <div class="form-group">
+                    <label>Query url</label>
+                    <div>
+                        <input type="text" class="form-control" name="url" disabled/>
+                    </div>
+                </div>
+{#                Connect message field#}
+                <div class="form-group">
+                    <label for="message" class="control-label">Connect Message</label>
+                    <div>
+                        <textarea class="form-control" rows="3" name="connect_message" disabled></textarea>
+                    </div>
+                </div>
+{#                Forward message field#}
+                <div class="form-group">
+                    <label for="message" class="control-label">Forward Message</label>
+                    <div>
+                        <textarea class="form-control" rows="3" name="forward_message" disabled></textarea>
+                    </div>
+                </div>
+
+                <table id="task_details" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Connection %</th>
+                        <th>Brake Every (min)</th>
+                        <th>Brake On (min)</th>
+                        <th>Connect with message</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td id="con" align="center"></td>
+                        <td id="b_every" align="center"></td>
+                        <td id="b_on" align="center"></td>
+                        <td id="c_with_mess" align="center"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
+
