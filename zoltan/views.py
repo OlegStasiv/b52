@@ -1,6 +1,6 @@
 import warnings
 from django.contrib import messages
-from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm, UserChangeForm
+from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 from django.contrib.auth.views import deprecate_current_app
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
@@ -15,7 +15,7 @@ from django.utils.deprecation import RemovedInDjango21Warning
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from zoltan.forms import SignUpForm, PasswordResetForm, profileForm
-from zoltan.models import Task, TaskCandidates, User
+from zoltan.models import Task, TaskCandidates
 
 UserModel = get_user_model()
 
@@ -78,19 +78,17 @@ def password_reset(request,
             form = password_reset_form(request.POST)
             if form.is_valid():
                 opts = {
-                'use_https': request.is_secure(),
-                'token_generator': token_generator,
-                'from_email': from_email,
-                'email_template_name': email_template_name,
-                'subject_template_name': subject_template_name,
-                'request': request,
-                'html_email_template_name': html_email_template_name,
-                'extra_email_context': extra_email_context,
+                    'use_https': request.is_secure(),
+                    'token_generator': token_generator,
+                    'from_email': from_email,
+                    'email_template_name': email_template_name,
+                    'subject_template_name': subject_template_name,
+                    'request': request,
+                    'html_email_template_name': html_email_template_name,
+                    'extra_email_context': extra_email_context,
                 }
                 form.save(**opts)
             return HttpResponseRedirect(post_reset_redirect)
-            # messages.success(request, 'Form submission successful')
-            # return render(request, 'login.html')
 
     else:
         form = password_reset_form()
@@ -121,19 +119,6 @@ def change_password(request):
     return redirect('/login')
 
 
-# def change_profile(request):
-#     if request.user.is_authenticated():
-#         if request.method == 'POST':
-#             pass
-#         else:
-#             email = request.user.email
-#             f_name = request.user.first_name
-#             l_name = request.user.last_name
-#             context = {"first_name": f_name, "last_name": l_name, "email":email}
-#             return render(request, 'profile.html', context)
-#     return redirect('/login')
-
-
 def change_profile(request):
     if request.method == 'POST':
         form = profileForm(data=request.POST, instance=request.user)
@@ -146,6 +131,7 @@ def change_profile(request):
         form = profileForm(instance=request.user)
 
     return render(request, 'profile.html', {'form': form})
+
 
 # Doesn't need csrf_protect since no-one can guess the URL
 @sensitive_post_parameters()
