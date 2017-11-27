@@ -31,7 +31,7 @@ class MyUserManager(BaseUserManager):
             email=self.normalize_email(email),
             password=password,
         )
-
+        user.is_staff = False
         user.save(using=self._db)
         return user
 
@@ -55,6 +55,7 @@ class MyUserManager(BaseUserManager):
             password=password,
         )
         user.is_admin = True
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
@@ -65,6 +66,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email'), unique=True)
     date_joined = models.DateTimeField(_('registered'), auto_now_add=True)
     is_active = models.BooleanField(_('is_active'), default=True)
+    is_staff = models.BooleanField(_('staff status'), default=False)
     points = models.IntegerField(default=1000)
     objects = MyUserManager()
 
@@ -152,6 +154,15 @@ class TaskCandidates(models.Model):
     class Meta:
         unique_together = ('task', 'candidate')
 
+    def get_task_name(self):
+        """Return task's name."""
+        task_name = '%s' % (self.task.task_name)
+        return task_name.strip()
+
+    def get_candidate_name(self):
+        """Return candidate's name."""
+        candidate_name = '%s' % (self.candidate.full_name)
+        return candidate_name.strip()
 
 @receiver(pre_save, sender=TaskCandidates)
 def set_active_from_on_update(sender, instance, **kwargs):

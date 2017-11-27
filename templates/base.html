@@ -51,6 +51,9 @@
                     <li><a href={% url 'candidates' %}>Candidates</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
+                    <li class="navbar-text">Signed in as <b>{{ request.user.get_full_name }}</b></li>
+                    <li class="navbar-text" id="points"><img class="image-refresh" src="{% static "web/images/refresh_icon.png" %}" data-src="{% static 'web/images/refresh_icon1.png' %}"
+                            data-hover="{% static 'web/images/refresh_icon1.png' %}"> <span id="point">{{ request.user.points }}</span></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">My account<b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -97,6 +100,11 @@
             $(this).attr("src", $(this).attr("src").replace("candidates.png", "candidates1.png"));
         }).mouseout(function (e) {
             $(this).attr("src", $(this).attr("src").replace("candidates1.png", "candidates.png"));
+        });
+        $(".image-refresh").mouseover(function (e) {
+            $(this).attr("src", $(this).attr("src").replace("refresh_icon.png", "refresh_icon1.png"));
+        }).mouseout(function (e) {
+            $(this).attr("src", $(this).attr("src").replace("refresh_icon1.png", "refresh_icon.png"));
         });
     </script>
 

@@ -15,7 +15,7 @@ from django.utils.deprecation import RemovedInDjango21Warning
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from zoltan.forms import SignUpForm, PasswordResetForm, profileForm
-from zoltan.models import Task, TaskCandidates
+from zoltan.models import Task, TaskCandidates, User
 
 UserModel = get_user_model()
 
@@ -36,7 +36,7 @@ def log_in(request):
             if user is not None:
                 login(request, user)
                 if user.is_superuser:
-                    return redirect('/admin')
+                    return redirect('/tasks')
                 return redirect('/tasks')
             return redirect('/login')
         elif request.POST.get('submit') == 'Sign Up':
@@ -53,6 +53,14 @@ def log_in(request):
 
 def log_out(request):
     logout(request)
+    return redirect('/login')
+
+
+def points(request):
+    if request.user.is_authenticated():
+        points = User.objects.get(id=request.user.id).points
+        context = {'data': points}
+        return JsonResponse({'data': context})
     return redirect('/login')
 
 

@@ -18,3 +18,14 @@ $(".detail").on("click", function () {
         }
     });
 });
+
+$("#points").on("click", function () {
+    $.ajax({
+        type: "GET",
+        url: "/points/",
+
+        success: function (data) {
+            $('#point').text(data.data.data);
+        }
+    });
+});

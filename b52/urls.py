@@ -19,6 +19,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib.auth import views as auth_views
 from zoltan import views
 urlpatterns = [
+    url(r'^admin/', admin.site.urls),
     url(r'^$', views.index, name='index'),
     url(r'^login/', views.log_in, name='login'),
     url(r'^logout/', views.log_out, name='logout'),
@@ -35,5 +36,6 @@ urlpatterns = [
     url(r'^tasks/', views.tasks, name='tasks'),
     url(r'^candidates/(?P<id>\d+)', views.candidates, name='candidates'),
     url(r'^candidates/', views.candidates, name='candidates'),
+    url(r'^points/', views.points, name='points'),
 
 ]
