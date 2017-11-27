@@ -119,3 +119,24 @@ class PasswordResetForm(forms.Form):
                 subject_template_name, email_template_name, context, from_email,
                 email, html_email_template_name=html_email_template_name,
             )
+
+
+# class UserCreateForm(UserCreationForm):
+#     email = forms.EmailField(required=True)
+#
+#     class Meta:
+#         model = User
+#         fields = ("email", "first_name", "last_name")
+#
+#     def save(self, commit=True):
+#         user = super(UserCreateForm, self).save(commit=False)
+#         user.email = self.cleaned_data["email"]
+#         if commit:
+#             user.save()
+#         return user
+
+
+class profileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']

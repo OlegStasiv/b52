@@ -17,6 +17,12 @@ body {
     color: #fdfdff;
 }
 
+.dropdownn {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #35ff27;
+    border-color: #27e200; /* Цвет границы */
+    border-style: solid;
+}
 
 .dropdown-menu {
   top: 50px; /*height of main menu*/
@@ -25,7 +31,7 @@ body {
 
 .pagination > .active > a, .pagination > .active > a:hover, .pagination > .active > a:focus, .pagination > .active > span, .pagination > .active > span:hover, .pagination > .active > span:focus {
     z-index: 1;
-    color: #fff;
+    color: #fdfdff;
     background-color: #0eb700;
     border-color: #0eb700;
     cursor: default;
@@ -36,9 +42,46 @@ body{
 }
 
 .bootstrap-select>.dropdown-toggle.bs-placeholder:hover {
-    color: #fdfdff;
+    color: #10ff0c;
 }
 
 .filter-option.pull-left {
-    color: white;
+    color: rgba(0, 0, 0, 0.64);
+    font-size: medium;
+    font-style: inherit;
+}
+
+.password-background {
+  position: relative;
+  top: -34px;
+  margin-bottom: -34px;
+  height: 34px;
+  width: 0;
+  border-radius: 4px;
+  z-index: -1;
+  /* CSS Transitions */
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
+  -ms-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+}
+
+#password {
+  background: none;
+}
+
+.strength {
+  float: right;
+}
+
+.form-control{
+    height: 37px;
+}
+
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+    color: #fff;
+    text-decoration: none;
+    outline: 0;
+     background-color: #c6c6c6;
 }

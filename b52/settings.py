@@ -98,7 +98,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': 5432,
         'PASSWORD': '12345678',
-    }
+    },
 }
 
 # Password validation

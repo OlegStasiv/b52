@@ -1,10 +1,11 @@
 import warnings
-from django.contrib.auth.forms import SetPasswordForm
+from django.contrib import messages
+from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm, UserChangeForm
 from django.contrib.auth.views import deprecate_current_app
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import login, authenticate, logout, get_user_model
+from django.contrib.auth import login, authenticate, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
 from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.shortcuts import render, redirect, render_to_response, resolve_url
@@ -13,8 +14,8 @@ from django.urls import reverse
 from django.utils.deprecation import RemovedInDjango21Warning
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
-from zoltan.forms import SignUpForm, PasswordResetForm
-from zoltan.models import Task, TaskCandidates
+from zoltan.forms import SignUpForm, PasswordResetForm, profileForm
+from zoltan.models import Task, TaskCandidates, User
 
 UserModel = get_user_model()
 
@@ -74,9 +75,9 @@ def password_reset(request,
     else:
         post_reset_redirect = resolve_url(post_reset_redirect)
     if request.method == "POST":
-        form = password_reset_form(request.POST)
-        if form.is_valid():
-            opts = {
+            form = password_reset_form(request.POST)
+            if form.is_valid():
+                opts = {
                 'use_https': request.is_secure(),
                 'token_generator': token_generator,
                 'from_email': from_email,
@@ -85,8 +86,8 @@ def password_reset(request,
                 'request': request,
                 'html_email_template_name': html_email_template_name,
                 'extra_email_context': extra_email_context,
-            }
-            form.save(**opts)
+                }
+                form.save(**opts)
             return HttpResponseRedirect(post_reset_redirect)
             # messages.success(request, 'Form submission successful')
             # return render(request, 'login.html')
@@ -102,6 +103,49 @@ def password_reset(request,
 
     return TemplateResponse(request, template_name, context)
 
+
+def change_password(request):
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form = PasswordChangeForm(request.user, request.POST)
+            if form.is_valid():
+                user = form.save()
+                update_session_auth_hash(request, user)  # Important!
+                messages.success(request, 'Your password was successfully updated!')
+                return redirect('change_password')
+        else:
+            form = PasswordChangeForm(request.user)
+        return render(request, 'change_password.html', {
+            'form': form
+            })
+    return redirect('/login')
+
+
+# def change_profile(request):
+#     if request.user.is_authenticated():
+#         if request.method == 'POST':
+#             pass
+#         else:
+#             email = request.user.email
+#             f_name = request.user.first_name
+#             l_name = request.user.last_name
+#             context = {"first_name": f_name, "last_name": l_name, "email":email}
+#             return render(request, 'profile.html', context)
+#     return redirect('/login')
+
+
+def change_profile(request):
+    if request.method == 'POST':
+        form = profileForm(data=request.POST, instance=request.user)
+        if form.is_valid():
+            update = form.save(commit=False)
+            update.user = request.user
+            update.save()
+
+    else:
+        form = profileForm(instance=request.user)
+
+    return render(request, 'profile.html', {'form': form})
 
 # Doesn't need csrf_protect since no-one can guess the URL
 @sensitive_post_parameters()
@@ -159,7 +203,7 @@ def password_reset_confirm(request, uidb64=None, token=None,
 
 def tasks(request):
     if request.user.is_authenticated():
-        tasks = Task.objects.filter(user_id=request.user.id)
+        tasks = Task.objects.filter(user_id=request.user.id).order_by('id')
         context = {'tasks': tasks}
         return render(request, 'tasks.html', context)
     return redirect('/tasks')
