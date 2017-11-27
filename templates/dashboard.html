@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main_block %}
+
+<div class="wrapper">
+    <div class="counter col_fourth">
+      <i class="fa fa-code fa-2x"><img src={% static 'web/images/d_send_connect.png' %}></i>
+      <h2 class="timer count-title count-number" data-to="{{ sent_connection }}" data-speed="1500"></h2>
+       <p class="count-text ">Sent connection request</p>
+    </div>
+
+    <div class="counter col_fourth">
+      <i class="fa fa-coffee fa-2x"><img src={% static 'web/images/d_accept.png' %}></i>
+      <h2 class="timer count-title count-number" data-to="{{ accept }}" data-speed="1500"></h2>
+      <p class="count-text ">Accepted</p>
+    </div>
+
+    <div class="counter col_fourth">
+      <i class="fa fa-lightbulb-o fa-2x"><img src={% static 'web/images/d_send_message.png' %}></i>
+      <h2 class="timer count-title count-number" data-to="{{ sent_message }}" data-speed="1500"></h2>
+      <p class="count-text ">Sent messages</p>
+    </div>
+
+    <div class="counter col_fourth end">
+      <i class="fa fa-bug fa-2x"><img src={% static 'web/images/d_forward_message.png' %}></i>
+      <h2 class="timer count-title count-number" data-to="{{ sent_forward_message }}" data-speed="1500"></h2>
+      <p class="count-text ">Sent forward messages</p>
+    </div>
+</div>
+{% endblock %}
+

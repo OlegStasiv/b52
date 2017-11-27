@@ -37,5 +37,6 @@ urlpatterns = [
     url(r'^candidates/(?P<id>\d+)', views.candidates, name='candidates'),
     url(r'^candidates/', views.candidates, name='candidates'),
     url(r'^points/', views.points, name='points'),
+    url(r'^dashboard/', views.dashboard, name='dashboard'),
 
 ]

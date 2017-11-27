@@ -17,6 +17,8 @@
 
     <link href={% static 'web/css/navbar.css' %} rel="stylesheet">
 
+    <link href={% static 'web/css/counter.css' %} rel="stylesheet">
+
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
@@ -47,6 +49,7 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <li><a href={% url 'dashboard' %}>Dashboard</a></li>
                     <li><a href={% url 'tasks' %}>Tasks</a></li>
                     <li><a href={% url 'candidates' %}>Candidates</a></li>
                 </ul>
@@ -81,6 +84,7 @@
     <script src={% static 'web/js/task_modal.js' %}></script>
     <script type="text/javascript" src="{% static 'web/js/footer.js' %}"></script>
     <script type="text/javascript" src="{% static 'web/js/candidates.js' %}"></script>
+    <script type="text/javascript" src="{% static 'web/js/counter.js' %}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script>
         $(".nav li").on("click", function () {

@@ -22,7 +22,7 @@ UserModel = get_user_model()
 
 def index(request):
     if request.user.is_authenticated():
-        return redirect('tasks')
+        return redirect('dashboard')
     return render_to_response('index.html')
 
 
@@ -36,8 +36,8 @@ def log_in(request):
             if user is not None:
                 login(request, user)
                 if user.is_superuser:
-                    return redirect('/tasks')
-                return redirect('/tasks')
+                    return redirect('/dashboard')
+                return redirect('/dashboard')
             return redirect('/login')
         elif request.POST.get('submit') == 'Sign Up':
             form = SignUpForm(request.POST)
@@ -47,7 +47,7 @@ def log_in(request):
                 raw_password = form.cleaned_data.get('password1')
                 user = authenticate(username=username, password=raw_password)
                 login(request, user)
-                return redirect('/tasks')
+                return redirect('/dashboard')
     return render_to_response('login.html')
 
 
@@ -223,4 +223,15 @@ def candidates(request):
         candidates = TaskCandidates.objects.filter(task__id=task_id)
         context = {'candidates': candidates, 'tasks': tasks}
         return render(request, 'candidates.html', context)
+    return redirect('/login')
+
+
+def dashboard(request):
+    if request.user.is_authenticated():
+        sent_connection = Task.objects.filter(user_id=request.user.id).filter(taskcandidates__send_connect=True).count()
+        accept = Task.objects.filter(user_id=request.user.id).filter(taskcandidates__accept_connect=True).count()
+        sent_message = Task.objects.filter(user_id=request.user.id).filter(taskcandidates__send_message=True).count()
+        sent_forward_message = Task.objects.filter(user_id=request.user.id).filter(taskcandidates__send_forward=True).count()
+        context = {'sent_connection': sent_connection, 'accept': accept, 'sent_message': sent_message, 'sent_forward_message': sent_forward_message}
+        return render(request, 'dashboard.html', context)
     return redirect('/login')
