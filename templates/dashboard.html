@@ -3,7 +3,9 @@
 
 {% block main_block %}
 
-<div class="wrapper">
+
+    <div class="container center-block">
+            <div class="wrapper">
     <div class="counter col_fourth">
       <i class="fa fa-code fa-2x"><img src={% static 'web/images/d_send_connect.png' %}></i>
       <h2 class="timer count-title count-number" data-to="{{ sent_connection }}" data-speed="1500"></h2>
@@ -28,5 +30,14 @@
       <p class="count-text ">Sent forward messages</p>
     </div>
 </div>
+    </div>
+    <h2 style="text-align: center">Geo activities</h2>
+    <div class="container">
+        <div class="wrapper">
+            <div id="regions_div" style="width: 900px; height: 500px; "></div>
+        </div>
+    </div>
+
+
 {% endblock %}
 

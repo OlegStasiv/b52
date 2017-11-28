@@ -5,3 +5,4 @@ psycopg2==2.7.3.2
 pytz==2017.3
 django-sorting-bootstrap==1.1.1
 django-pagination-bootstrap==1.2.4
+geotext==0.3.0

@@ -15,7 +15,8 @@ from django.utils.deprecation import RemovedInDjango21Warning
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from zoltan.forms import SignUpForm, PasswordResetForm, profileForm
-from zoltan.models import Task, TaskCandidates, User
+from zoltan.models import Task, TaskCandidates, User, Candidate
+from geotext import GeoText
 
 UserModel = get_user_model()
 
@@ -232,6 +233,25 @@ def dashboard(request):
         accept = Task.objects.filter(user_id=request.user.id).filter(taskcandidates__accept_connect=True).count()
         sent_message = Task.objects.filter(user_id=request.user.id).filter(taskcandidates__send_message=True).count()
         sent_forward_message = Task.objects.filter(user_id=request.user.id).filter(taskcandidates__send_forward=True).count()
-        context = {'sent_connection': sent_connection, 'accept': accept, 'sent_message': sent_message, 'sent_forward_message': sent_forward_message}
+
+        # Get all candidate's countries and their counts
+        candidates_list = Candidate.objects.filter(taskcandidates__task__user_id=request.user.id).values("country")
+        country = []
+        for candidate in candidates_list:
+            places = GeoText(candidate['country'])
+            try:
+                c = places.countries[0]
+                country.append(c)
+            except IndexError:
+                country.append(candidate['country'])
+
+        from collections import Counter
+        word_dict = Counter(country)
+        countries_list=[["Country", "Popularity"]]
+        list_key_value = [[k, v] for k, v in dict(word_dict).items()]
+        for i in list_key_value:
+            countries_list.append(i)
+
+        context = {'sent_connection': sent_connection, 'accept': accept, 'sent_message': sent_message, 'sent_forward_message': sent_forward_message, 'country': countries_list}
         return render(request, 'dashboard.html', context)
     return redirect('/login')

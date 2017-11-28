@@ -86,6 +86,7 @@
     <script type="text/javascript" src="{% static 'web/js/candidates.js' %}"></script>
     <script type="text/javascript" src="{% static 'web/js/counter.js' %}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
         $(".nav li").on("click", function () {
             $(".nav li").removeClass("active");
@@ -121,7 +122,28 @@
 
     <!-- (Optional) Latest compiled and minified JavaScript translation files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script>
+    <script>
+          google.charts.load('current', {
+        'packages':['geochart'],
+        // Note: you will need to get a mapsApiKey for your project.
+        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+      });
+      google.charts.setOnLoadCallback(drawRegionsMap);
 
+      function drawRegionsMap() {
+{#          var a = [["Country", "Popularity"], ["Germany", 10]];#}
+          var a = [["Country", "Popularity"], {{country|safe}}];
+          var b = {{country|safe}};
+        var data = google.visualization.arrayToDataTable(b);
+
+        var options = {};
+
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+        chart.draw(data, options);
+      }
+    </script>
 </div>
 </body>
 </html>
