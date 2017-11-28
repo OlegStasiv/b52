@@ -133,6 +133,7 @@ class Task(models.Model):
     brake_for = models.IntegerField(null=True)
     max_send_connect = models.IntegerField(null=True)
     connect_with_message = models.BooleanField(default=False)
+    continue_from_page = models.IntegerField(null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     candidates = models.ManyToManyField(Candidate, through='TaskCandidates')
     created_at = models.DateTimeField(auto_now_add=True)
