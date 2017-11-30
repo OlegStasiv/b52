@@ -9,8 +9,10 @@ body {
 
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     color: #fdfdff;
-    background-color: #27e200;
+    background-color: rgba(92, 92, 92, 0.54);
+    border-bottom: 3px solid rgb(55, 255, 0);
 }
+
 
 .btn {
     background-color: #56e043;
@@ -84,4 +86,8 @@ body{
     text-decoration: none;
     outline: 0;
      background-color: #c6c6c6;
+}
+
+img :active{
+    border: hidden;
 }
