@@ -1,14 +1,38 @@
 from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 from rest_framework import status, generics, permissions, authentication
 from zoltan.models import User, Task, TaskCandidates
 from api.serializers import UserSerializer, TaskDetailSerializer, TaskCreateSerializer, TaskCandidateSerializer, \
     CandidateSerializer, TaskDetailCandidateSerializer
+from rest_framework import parsers, renderers
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-APP_VERSION = '0.1'  # CHANGE APP VERSION HERE
+APP_VERSION = '0.2'  # CHANGE APP VERSION HERE
+
+
+class ObtainAuthToken(APIView):
+    throttle_classes = ()
+    permission_classes = ()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+    renderer_classes = (renderers.JSONRenderer,)
+    serializer_class = AuthTokenSerializer
+
+    def post(self, request, *args, **kwargs):
+        if request.data['version'] != APP_VERSION:
+            return Response({"actual": False})
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
+
+
+obtain_auth_token = ObtainAuthToken.as_view()
 
 
 class MyAuthentication(authentication.TokenAuthentication):
@@ -124,7 +148,7 @@ class TaskDetailCandidate(generics.ListCreateAPIView):
 
 @api_view()
 def check_version(request):
-    """Method to check actual version of app.
+    """Method to check actual version of app from request.
 
     :parameter: version -- version from app
     """
