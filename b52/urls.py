@@ -39,5 +39,6 @@ urlpatterns = [
     url(r'^candidates/', views.candidates, name='candidates'),
     url(r'^points/', views.points, name='points'),
     url(r'^dashboard/', views.dashboard, name='dashboard'),
+    url(r'^channels-api/', include('channels_api.urls'))
 
 ]

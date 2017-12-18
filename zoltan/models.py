@@ -165,6 +165,14 @@ class TaskCandidates(models.Model):
         candidate_name = '%s' % (self.candidate.full_name)
         return candidate_name.strip()
 
+
+class Notification(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='notifications')
+    text = models.TextField()
+    read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 @receiver(pre_save, sender=TaskCandidates)
 def set_active_from_on_update(sender, instance, **kwargs):
     if instance.send_connect is True and instance.send_connect_date is None:

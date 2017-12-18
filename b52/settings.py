@@ -44,7 +44,19 @@ INSTALLED_APPS = [
     'api',
     'sorting_bootstrap',
     'pagination_bootstrap',
+    'channels',
+    'channels_api'
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+        "ROUTING": "b52.routing.channel_routing",
+    },
+}
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

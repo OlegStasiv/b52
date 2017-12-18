@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from zoltan.models import User, Task, Candidate, TaskCandidates
+from zoltan.models import User, Task, Candidate, TaskCandidates, Notification
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -60,3 +60,10 @@ class TaskDetailCandidateSerializer(serializers.ModelSerializer):
         model = TaskCandidates
         fields = '__all__'
         extra_kwargs = {'pk': {'read_only': True}}
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Notification
+        fields = '__all__'
