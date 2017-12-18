@@ -105,11 +105,11 @@ WSGI_APPLICATION = 'b52.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'zoltan',
-        'USER': 'lego',
+        'NAME': 'root',
+        'USER': 'root',
         'HOST': '127.0.0.1',
         'PORT': 5432,
-        'PASSWORD': '12345678',
+        'PASSWORD': 'iFeelGoodYonchi',
     },
 }
 

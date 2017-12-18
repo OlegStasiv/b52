@@ -238,10 +238,7 @@ def dashboard(request):
         candidates_list = Candidate.objects.filter(taskcandidates__task__user_id=request.user.id).values("country")
         country = []
         for candidate in candidates_list:
-            try:
-                places = GeoText(candidate['country'])
-            except TypeError:
-                pass
+            places = GeoText(candidate['country'])
             try:
                 c = places.countries[0]
                 country.append(c)
