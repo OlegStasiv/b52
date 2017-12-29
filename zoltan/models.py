@@ -91,8 +91,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def update_points(self):
-        """Minus points for """
+        """Minus points for user"""
         self.points = self.points - 1
+        if self.points == 0:
+            from zoltan.utils import send_notification_to_user
+            send_notification_to_user(self, 'You rich limit of your points. Now you have 0 points')
         self.save()
 
 
