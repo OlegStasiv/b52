@@ -25,3 +25,22 @@ def send_notification_to_user(user, text):
     }
 
     Group("user-%s" % user.id).send({'text': json.dumps(payload)})
+
+
+def send_points_count_to_user(user, point_count):
+    """Send new point value to user by socket.
+
+    :param user : User instance
+    :param point_count : Point count
+    """
+
+    payload = {
+        "stream": "points",
+        'payload': {
+            'data': {'point': point_count},
+            'action': 'update',
+            'response_status': 200,
+        },
+    }
+
+    Group("user-%s" % user.id).send({'text': json.dumps(payload)})

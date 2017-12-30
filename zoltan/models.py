@@ -68,6 +68,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_('is_active'), default=True)
     is_staff = models.BooleanField(_('staff status'), default=False)
     points = models.IntegerField(default=1000)
+
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
@@ -97,6 +98,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             from zoltan.utils import send_notification_to_user
             send_notification_to_user(self, 'You rich limit of your points. Now you have 0 points')
         self.save()
+        # Send new points value by socket
+        from zoltan.utils import send_points_count_to_user
+        send_points_count_to_user(self, self.points)
 
 
 class Candidate(models.Model):
