@@ -7,16 +7,20 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import login, authenticate, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpResponseRedirect, JsonResponse, Http404
+from django.http import HttpResponseRedirect, JsonResponse, Http404, HttpResponse
 from django.shortcuts import render, redirect, render_to_response, resolve_url
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.deprecation import RemovedInDjango21Warning
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
-from zoltan.forms import SignUpForm, PasswordResetForm, profileForm
-from zoltan.models import Task, TaskCandidates, User, Candidate
+from zoltan.forms import SignUpForm, PasswordResetForm, profileForm, ContactForm
+from zoltan.models import Task, TaskCandidates, User, Candidate, Notification
 from geotext import GeoText
+from django.core.mail import EmailMessage, send_mail, BadHeaderError
+from django.shortcuts import redirect
+from django.template import Context
+from django.template.loader import get_template
 
 UserModel = get_user_model()
 
@@ -24,6 +28,18 @@ UserModel = get_user_model()
 def index(request):
     if request.user.is_authenticated():
         return redirect('dashboard')
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['name']
+            from_email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            try:
+                send_mail(subject, message, from_email, [from_email])
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            messages.info(request, 'Mail sent successfully!')
+            return redirect('index')
     return render_to_response('index.html')
 
 

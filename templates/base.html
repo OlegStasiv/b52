@@ -33,7 +33,6 @@
 <body>
 
 <div class="container">
-
     <!-- Static navbar -->
     <nav class="navbar navbar-default" role="navigation">
         <div class="container-fluid">
@@ -53,15 +52,17 @@
                     <li><a href={% url 'tasks' %}>Tasks</a></li>
                     <li><a href={% url 'candidates' %}>Candidates</a></li>
                 </ul>
+
                 <ul class="nav navbar-nav navbar-right">
                     <li class="navbar-text">Signed in as <b>{{ request.user.get_full_name }}</b></li>
                     <li class="navbar-text" id="points"><img class="image-refresh" src="{% static "web/images/refresh_icon.png" %}" data-src="{% static 'web/images/refresh_icon1.png' %}"
                             data-hover="{% static 'web/images/refresh_icon1.png' %}"> <span id="point">{{ request.user.points }}</span></li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">My account<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">My account <span id='badge' class="badge"></span> <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href={% url 'change_profile' %}>Change profile</a></li>
                             <li><a href={% url 'change_password' %}>Change password</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#notifications">Notifications <span id='badge1' class="badge"></span> </a></li>
                             <li class="divider"></li>
                             <li><a href={% url 'logout' %}>Logout</a></li>
                         </ul>
@@ -122,6 +123,7 @@
 
     <!-- (Optional) Latest compiled and minified JavaScript translation files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script>
+
     <script>
           google.charts.load('current', {
         'packages':['geochart'],
@@ -144,6 +146,88 @@
         chart.draw(data, options);
       }
     </script>
+    <script>
+        var ws = new WebSocket('ws://127.0.0.1:8000/');
+        var token_auth = "{{request.user.auth_token}}";
+        var src_picture = "{% static 'web/images/read.png' %}";
+        var data = {
+            'stream': "notifications",
+            'payload': {'action': "subscribe", 'data': {}, 'token': token_auth}
+        };
+        ws.onopen = function () {
+            console.log("Opening a connection...");
+            window.identified = false;
+        };
+        ws.onclose = function (evt) {
+            console.log("I'm sorry. Bye!");
+        };
+        ws.onmessage = function (message) {
+            var jsonObject = JSON.parse(message.data);
+            var notification_counter = jsonObject.payload.data.length;
+            var messages = jsonObject.payload.data;
+            if (notification_counter >= 0) {
+                document.getElementById("badge").innerHTML =notification_counter;
+                document.getElementById("badge1").innerHTML =notification_counter;
+                for (var i = 0, len = messages.length; i < len; i++) {
+                    var id_message = messages[i]['id'];
+                    var t = "{{ request.user.auth_token }}";
+                    if($("[data-board-id="+id_message+"]").length === 0){
+                        var mess = messages[i]['text'];
+                        var date = messages[i]['created_at'];
+                        $(excelDataTable).find('tbody').append( "<tr data-board-id="+ id_message +"><td>"+ mess +"</td><td>"+date+"</td><td><a id="+id_message+" class='readbtn' href='#' onclick=\"sendMyMessages('"+id_message+"','"+token_auth+"')\"><img src="+src_picture+"/></a></td></tr>");
+                    }
+                }
+            }
+            console.log(jsonObject)
+        };
+        var msg = JSON.stringify(data);
+        var wsSend = function(data) {
+        if (!ws.readyState) {
+            setTimeout(function () {
+                wsSend(data);
+            }, 100);
+        } else {
+            ws.send(data);
+        }
+        };
+        wsSend(msg);
+
+    </script>
+
+{#    MODAL WINDOW TASK DETAIL#}
+    <div class="modal fade" id="notifications" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4><span id="model_title"></span></h4>
+                </div>
+                <div id="form-modal-notif" class="modal-body">
+{#                    <ol id="list">#}
+{##}
+{#                    </ol>#}
+                    <table class="table table-hover" id="excelDataTable">
+                        <thead>
+                            <tr>
+                                <th>Message</th>
+                                <th>Created Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+                            <tr data-board-id="" id="myrow">
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 </body>
 </html>

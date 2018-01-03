@@ -29,3 +29,31 @@ $("#points").on("click", function () {
         }
     });
 });
+
+function sendMyMessages(pk,token) {
+    data = {
+        'stream': "notifications",
+        'payload':{
+            'action': "update",
+            'data': {
+                'read': true
+            },
+            'pk': pk,
+            'token': token
+        }
+    };
+
+    var msg = JSON.stringify(data);
+    var wsSend = function(data) {
+    if (!ws.readyState) {
+        setTimeout(function () {
+            wsSend(data);
+        }, 100);
+    } else {
+        ws.send(data);
+    }
+    };
+    wsSend(msg);
+    $("[data-board-id="+pk+"]").fadeOut(700, function() { $(this).remove(); });
+
+}

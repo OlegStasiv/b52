@@ -121,19 +121,13 @@ class PasswordResetForm(forms.Form):
             )
 
 
-# class UserCreateForm(UserCreationForm):
-#     email = forms.EmailField(required=True)
-#
-#     class Meta:
-#         model = User
-#         fields = ("email", "first_name", "last_name")
-#
-#     def save(self, commit=True):
-#         user = super(UserCreateForm, self).save(commit=False)
-#         user.email = self.cleaned_data["email"]
-#         if commit:
-#             user.save()
-#         return user
+class ContactForm(forms.Form):
+    name = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
+    message = forms.CharField(
+        required=True,
+        widget=forms.Textarea
+    )
 
 
 class profileForm(forms.ModelForm):
