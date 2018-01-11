@@ -190,3 +190,23 @@ def set_active_from_on_update(sender, instance, **kwargs):
         instance.send_message_date = datetime.now()
     if instance.send_forward is True and instance.send_forward_date is None:
         instance.send_forward_date = datetime.now()
+
+
+class Build(models.Model):
+    WINDOWS = 1
+    MAC = 2
+    LINUX = 3
+    OTHER = 4
+
+    STATUS_CHOICES = (
+        (WINDOWS, 'WINDOWS'),
+        (MAC, 'MAC'),
+        (LINUX, 'LINUX'),
+        (OTHER, 'OTHER'),
+    )
+
+    system = models.IntegerField(choices=STATUS_CHOICES, default=WINDOWS)
+    description = models.CharField(max_length=255, blank=True)
+    version = models.CharField(max_length=128, blank=False)
+    file = models.FileField(upload_to='builds/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)

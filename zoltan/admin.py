@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from zoltan import models
-from zoltan.models import Task, User, Candidate, TaskCandidates
+from zoltan.models import Task, User, Candidate, TaskCandidates, Build
 
 
 class TaskList(admin.ModelAdmin):
@@ -33,7 +33,6 @@ class CandidateList(admin.ModelAdmin):
     list_display = ("full_name", "linkedin_url")
 
 
-
 class TaskCandidateList(admin.ModelAdmin):
     model = TaskCandidates
     list_display = ("task_name", "candidate_name", "send_connect", "accept_connect", "send_message", "send_forward")
@@ -45,7 +44,12 @@ class TaskCandidateList(admin.ModelAdmin):
         return obj.get_candidate_name()
 
 
+class BuildList(admin.ModelAdmin):
+    model = Build
+
+
 admin.site.register(models.TaskCandidates, TaskCandidateList)
 admin.site.register(models.User, UserList)
 admin.site.register(models.Task, TaskList)
 admin.site.register(models.Candidate, CandidateList)
+admin.site.register(models.Build, BuildList)

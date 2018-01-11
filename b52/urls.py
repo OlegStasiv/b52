@@ -17,7 +17,9 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from api.views import obtain_auth_token
+from b52 import settings
 from zoltan import views
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -40,5 +42,9 @@ urlpatterns = [
     url(r'^points/', views.points, name='points'),
     url(r'^dashboard/', views.dashboard, name='dashboard'),
     url(r'^channels-api/', include('channels_api.urls'))
-
 ]
+
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -174,7 +174,7 @@
                     if($("[data-board-id="+id_message+"]").length === 0){
                         var mess = messages[i]['text'];
                         var date = messages[i]['created_at'];
-                        $(excelDataTable).find('tbody').append( "<tr data-board-id="+ id_message +"><td>"+ mess +"</td><td>"+date+"</td><td><a id="+id_message+" class='readbtn' href='#' onclick=\"sendMyMessages('"+id_message+"','"+token_auth+"')\"><img src="+src_picture+"/></a></td></tr>");
+                        $(excelDataTable).find('tbody').append( "<tr data-board-id="+ id_message +"><td>"+ mess +"</td><td>"+date+"</td><td><a id="+id_message+" class='readbtn' href='#' onclick=\"sendMyMessages('"+id_message+"','"+token_auth+"')\"><img src="+src_picture+"></a></td></tr>");
                     }
                 }
             }

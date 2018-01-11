@@ -15,7 +15,7 @@ from django.utils.deprecation import RemovedInDjango21Warning
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from zoltan.forms import SignUpForm, PasswordResetForm, profileForm, ContactForm
-from zoltan.models import Task, TaskCandidates, User, Candidate, Notification
+from zoltan.models import Task, TaskCandidates, User, Candidate, Notification, Build
 from geotext import GeoText
 from django.core.mail import EmailMessage, send_mail, BadHeaderError
 from django.shortcuts import redirect
@@ -28,6 +28,23 @@ UserModel = get_user_model()
 def index(request):
     if request.user.is_authenticated():
         return redirect('dashboard')
+    if request.method == 'GET':
+        context = {
+            'win': None,
+            'mac': None,
+            'linux': None
+        }
+        build_win = Build.objects.filter(system=1).order_by('uploaded_at').last()
+        build_mac = Build.objects.filter(system=2).order_by('uploaded_at').last()
+        build_linux = Build.objects.filter(system=3).order_by('uploaded_at').last()
+        if build_win:
+            context['win'] = build_win.file
+        if build_mac:
+            context['mac'] = build_mac.file
+        if build_linux:
+            context['linux'] = build_linux.file
+
+        return render(request, 'index.html', context)
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -225,6 +242,7 @@ def detail_tasks(request, id):
         if request.is_ajax():
             obj = Task.objects.get(id=id)
             data = {"task_name": obj.task_name, "linkedin_url":obj.linkedin_url,
+                    "connect_message_note": obj.connect_note_text,
                     "connect_message_text": obj.connect_message_text, "forward_message": obj.forward_message_text,
                     "connection_percent": obj.connection_percent, "brake_every": obj.brake_every,
                     "brake_on": obj.brake_for, "connect_with_message": obj.connect_with_message}
