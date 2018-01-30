@@ -128,7 +128,7 @@ class Candidate(models.Model):
 
 class Task(models.Model):
     id = models.AutoField(primary_key=True)
-    task_type = models.CharField(default='full')
+    task_type = models.CharField(max_length=32, default='full')
     task_name = models.CharField(max_length=128, null=False, blank=False)
     linkedin_url = models.CharField(max_length=256, null=False, blank=False)
     linkedin_email = models.CharField(max_length=128, null=False, blank=False)
