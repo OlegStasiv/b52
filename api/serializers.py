@@ -26,20 +26,23 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
 
 class CandidateSerializer(serializers.ModelSerializer):
-    awards = serializers.JSONField(allow_null=True)
-    educations = serializers.JSONField(allow_null=True)
-    courses = serializers.JSONField(allow_null=True)
-    languages = serializers.JSONField(allow_null=True)
-    projects = serializers.JSONField(allow_null=True)
-    skills = serializers.ListField(child=serializers.CharField(allow_null=True), allow_null=True)
-    linkedin_url = serializers.URLField()
+    awards = serializers.JSONField(allow_null=True, required=False)
+    educations = serializers.JSONField(allow_null=True, required=False)
+    courses = serializers.JSONField(allow_null=True, required=False)
+    languages = serializers.JSONField(allow_null=True, required=False)
+    projects = serializers.JSONField(allow_null=True, required=False)
+    skills = serializers.ListField(child=serializers.CharField(allow_null=True), allow_null=True, required=False)
+    linkedin_url = serializers.URLField(allow_null=True, required=False)
 
     class Meta:
         model = Candidate
         fields = '__all__'
 
     def create(self, validated_data):
-        candidate, created = Candidate.objects.update_or_create(linkedin_url=validated_data['linkedin_url'], defaults=validated_data)
+        if validated_data.get('linkedin_url', None):
+            candidate, created = Candidate.objects.update_or_create(linkedin_url=validated_data['linkedin_url'], defaults=validated_data)
+        else:
+            candidate = Candidate.objects.create(**validated_data)
         return candidate
 
 
