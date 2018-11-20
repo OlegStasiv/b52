@@ -272,12 +272,13 @@ def dashboard(request):
         candidates_list = Candidate.objects.filter(taskcandidates__task__user_id=request.user.id).values("country")
         country = []
         for candidate in candidates_list:
-            places = GeoText(candidate['country'])
-            try:
-                c = places.countries[0]
-                country.append(c)
-            except IndexError:
-                country.append(candidate['country'])
+            if candidate.get('country'):
+                places = GeoText(candidate['country'])
+                try:
+                    c = places.countries[0]
+                    country.append(c)
+                except IndexError:
+                    country.append(candidate['country'])
 
         from collections import Counter
         word_dict = Counter(country)
