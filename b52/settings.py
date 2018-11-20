@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'zoltan',
     'api',
+    'storages',
     'sorting_bootstrap',
     'pagination_bootstrap',
     'channels',
@@ -190,6 +191,9 @@ if not DEBUG:
     MEDIAFILES_LOCATION = 'media'
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     MEDIA_URL = 'htts://{}/{}/'.format(AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
 
 else:
     MEDIA_ROOT = 'public/media'
