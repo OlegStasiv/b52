@@ -12,52 +12,29 @@ from b52 import settings
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password):
-        """Creates and saves a User with the given email, date of
-        birth and password.
+
+    def _create_user(self, email, password, **extra_fields):
         """
-        # if not first_name:
-        #     raise ValueError('Users must have an first name')
-        # if not last_name:
-        #     raise ValueError('Users must have an last name')
+        Creates and saves a User with the given email and password.
+        """
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError('The given email must be set')
         if not password:
             raise ValueError('Users must have an password')
-
-        user = self.model(
-            # first_name=first_name,
-            # last_name=last_name,
-            email=self.normalize_email(email),
-            password=password,
-        )
-        user.is_staff = False
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password):
-        """Creates and saves a superuser with the given email, date of
-        birth and password.
-        """
-        # if not first_name:
-        #     raise ValueError('Users must have an first name')
-        # if not last_name:
-        #     raise ValueError('Users must have an last name')
-        if not email:
-            raise ValueError('Users must have an email address')
-        if not password:
-            raise ValueError('Users must have an password')
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
 
-        user = self.create_user(
-            # first_name=first_name,
-            # last_name=last_name,
-            email=self.normalize_email(email),
-            password=password,
-        )
-        user.is_admin = True
-        user.is_staff = True
-        user.save(using=self._db)
-        return user
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_superuser', True)
+
+        return self._create_user(email, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
