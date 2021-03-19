@@ -11,7 +11,7 @@ Django==1.11.7
 django-filter==1.1.0
 django-pagination-bootstrap==1.2.4
 django-sorting-bootstrap==1.1.1
-djangorestframework==3.7.1
+djangorestframework==3.11.2
 geotext==0.4.0
 hyperlink==17.3.1
 incremental==17.5.0
